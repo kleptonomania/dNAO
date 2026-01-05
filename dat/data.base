@@ -2145,29 +2145,30 @@ crom
 	which, in the Cimmerian's mind, was all any god should be expected
 	to do.
 		[ The Tower of the Elephant, by Robert E. Howard ]
-crow quills 
+~crow
+crow quill 
 	Thrusting sword wielded by Corvian Knights, and a special paired weapon. 
 	When twin-handed, brandish four thin-edge blades in the left hand.
 	In their infatuation with Sister Friede, the Corvian Knights swore to 
 	protect the painting from fire, and to this end, took to the execution of 
 	their own brethren.
 			[ Dark Souls 3, by FromSoftware ]
-crow talons
+~crow
+set of crow talons
 	Talons used by Corvian Knights. Inflicts five perpendicular slashes, 
 	causing heavy bleeding. In their infatuation with Sister Friede, the
 	Corvian Knights swore to protect the painting from fire and to this end,
 	too to the execution of their own brethren.
 			[ Dark Souls 3, by FromSoftware ]
-  ______________,   ____
-;´	             `'/ |^'\
-  _____~———————————|~-\^ \
-;´		            \_—\^ \
-    ,,—————————————-´\_—\ '
-  ^      __________,~^\__/
- ;    _~^         __,/
-    ;´     _ ,~ ´´
-       ,^´ 
-      ;
+	  ______________,_
+	;´	           `/ |^'\
+	  _____~———————————|~-\^ \
+	;´		     \_—\^ \
+	    ,,—————————————-´\_—\ '
+	  ^   _____________,~^\__/
+	    ;´         __~———´´
+		__,~ ´´
+	       ;
 crossbow*
 	"God save thee, ancient Mariner!
 	From the fiends, that plague thee thus! -
@@ -2336,6 +2337,7 @@ daemon
 			and the Bad Seeds ]
 ~sting
 ~grimtooth
+~rondel dagger
 *dagger
 	Is this a dagger which I see before me,
 	The handle toward my hand? Come, let me clutch thee.
@@ -8903,6 +8905,32 @@ rogue
 	conceal it; and therein am I constant to my profession.
 		[ Autolycus the Rogue, from The Winter's Tale by
 			William Shakespeare ]
+rondel dagger
+	From the old french "rondeu". A type of long thrusting dagger 
+	designed primarily to pierce through chain-mail links and unarmored
+	gaps in armor. Often seen as a single-edged triangular blade, wide 
+	at the base and tapering to a fine point. The name was derived from
+	the circular disks used in the guard and pommel, designed to fit 
+	closely in the hand when gripped to prevent the hand from sliping 
+	while puncturing armor.
+	   /\
+	  ,||,
+	  ,||,
+	  ,||,
+	  ,||,
+	  ,||,
+	  ,||,
+	  ;||;
+	  ;||;
+	  ;||;
+   ||||
+	  ||||
+	————————
+	  |\\|
+	  |\\|
+   |\\|
+	  \__/
+	————————
 roshi
 	Roshi is a Japanese word, common in Zen Buddhism, meaning "old"
 	(ro) and "teacher" (shi). Roshi can be used as a term of respect,
