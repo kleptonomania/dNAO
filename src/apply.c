@@ -15,6 +15,7 @@ static const char tools_too[] = { ALL_CLASSES, SCOIN_CLASS, TOOL_CLASS, POTION_C
 				  WEAPON_CLASS, WAND_CLASS, GEM_CLASS, CHAIN_CLASS, 0 };
 static const char apply_armor[] = { ARMOR_CLASS, 0 };
 static const char imperial_repairs[] = { AMULET_CLASS, ARMOR_CLASS, RING_CLASS, WAND_CLASS, 0 };
+static const char stake_driver_tips[] = { WEAPON_CLASS, 0 };
 static const char apply_corpse[] = { FOOD_CLASS, 0 };
 static const char chain_class[] = { CHAIN_CLASS, 0 };
 static const char apply_all[] = { ALL_CLASSES, CHAIN_CLASS, 0 };
@@ -54,6 +55,7 @@ STATIC_DCL int FDECL(use_church_sword, (struct obj *));
 STATIC_DCL int FDECL(use_church_sheath, (struct obj *));
 STATIC_DCL int FDECL(use_beast_crusher, (struct obj *));
 STATIC_DCL int FDECL(use_devil_fist, (struct obj *));
+STATIC_DCL int FDECL(use_stake_driver, (struct obj *));
 STATIC_DCL int FDECL(use_smithing_hammer, (struct obj *));
 STATIC_DCL void FDECL(light_cocktail, (struct obj *));
 STATIC_DCL void FDECL(light_torch, (struct obj *));
@@ -2758,6 +2760,103 @@ use_devil_fist(struct obj *obj)
 	update_inventory();
 	return MOVE_INSTANT;
 }
+
+use_stake_driver(struct obj *obj)
+{
+	winid tmpwin;
+	anything any;
+	any.a_void = 0;         /* zero out all bits */
+	menu_item *selected;
+	int n = 0;
+	struct obj *stored_stake = 0;
+	struct obj *stake = 0;
+	int withering;
+
+
+	tmpwin = create_nhwindow(NHW_MENU);
+	start_menu(tmpwin);
+
+	any.a_int = 1;
+	add_menu(tmpwin, NO_GLYPH, &any , 's', 0, ATR_NONE,
+		 "Swap out the stake tip", MENU_UNSELECTED);
+		
+	any.a_int = 2;
+	add_menu(tmpwin, NO_GLYPH, &any , 'r', 0, ATR_NONE,
+		 "Transform", MENU_UNSELECTED);
+
+	end_menu(tmpwin, "Pick upgrade:");
+	n = select_menu(tmpwin, PICK_ONE, &selected);
+	destroy_nhwindow(tmpwin);
+	if(n <= 0){
+		return MOVE_INSTANT;
+	}
+	n = selected[0].item.a_int;
+	free(selected);
+
+	if(n == 1){
+		stake = getobj(stake_driver_tips, "swap the stake tip for");	
+		if(!stake) {
+			pline("No stake!");
+			return MOVE_CANCELLED;
+		}
+		if (objects[stake->otyp].oc_skill != (P_DAGGER || P_UNICORN_HORN)){
+		 	pline1(Never_mind);
+			return MOVE_CANCELLED;
+		}
+		if(inv_cnt() >= 52) {
+			You("are holding too much stuff to do that!");
+			return MOVE_CANCELLED;
+		}
+		if(stake->oartifact && obj->oartifact != ART_STAKE_OF_WITHERING){
+			pline("It resists the attempt!");
+			return MOVE_CANCELLED;
+		}
+
+		if(obj->cobj){
+//			pline("Attempting extract.");
+			stored_stake = obj->cobj;
+//			pline("took out stake, %i.", stored_stake->otyp);
+			obj_extract_self(stored_stake);	
+			    obj_extract_and_unequip_self(stake);
+//			pline("stored stake, %i.", stake->otyp);
+			add_to_container(obj, stake);
+				if (stake == obj->oartifact && obj->oartifact == ART_STAKE_OF_WITHERING){
+					withering = 1;
+				}
+
+			fix_object(obj);			
+			stored_stake = hold_another_object(stored_stake, "You fumble %s!",
+						doname(stored_stake), (const char *)0);
+		}	
+		
+		else {
+			pline("Stake driver with no tip inside, recovering from error by creating a new sword.");
+			stake = mksobj(STAKE, MKOBJ_NOINIT);
+		}
+
+		pline("exiting.");
+		update_inventory();
+		return MOVE_INSTANT;
+	}
+
+	if(n == 2){
+		if(obj->unpaid){
+		You("need to buy it.");
+		return MOVE_CANCELLED;
+		}
+		
+		if(obj->otyp == STAKE_DRIVER){
+			You("prime %s.",the(xname(obj)));
+			obj->otyp = JOLT_LANCE;
+		} else {
+			You("discharge %s.",the(xname(obj)));
+			obj->otyp = STAKE_DRIVER;
+		}
+		fix_object(obj);
+		update_inventory();
+		return MOVE_INSTANT;
+	}
+}		
 
 STATIC_OVL void
 use_lamp(obj)
@@ -11200,7 +11299,7 @@ doapply()
 	    return do_soul_coin(obj);
 	else if (obj->oclass == RING_CLASS || obj->oclass == AMULET_CLASS)
 	    return do_present_item(obj);
-	else if(is_knife(obj) && !(obj->oartifact==ART_PEN_OF_THE_VOID && obj->ovara_seals&SEAL_MARIONETTE)) 
+	else if(is_knife(obj) && !((obj->oartifact==ART_PEN_OF_THE_VOID && obj->ovara_seals&SEAL_MARIONETTE) || obj->otyp == STAKE_DRIVER || obj->otyp == JOLT_LANCE)) 
 		return do_carve_obj(obj);
 	
 	if(obj->oartifact == ART_SILVER_STARLIGHT) res = do_play_instrument(obj);
@@ -11248,6 +11347,8 @@ doapply()
 		return use_devil_fist(obj);
 	} else if(obj->otyp == CHURCH_SHORTSWORD){
 		return use_church_pick(obj);
+	} else if(obj->otyp == STAKE_DRIVER || obj->otyp == JOLT_LANCE){
+		return use_stake_driver(obj);
 	} else switch(obj->otyp){
 	case BLINDFOLD:
 	case ANDROID_VISOR:

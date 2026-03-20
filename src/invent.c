@@ -2440,6 +2440,9 @@ struct obj *obj;
 	else if (obj->otyp == SHANTA_PATA || obj->otyp == TWINGUN_SHANTA)
 		add_menu(win, NO_GLYPH, &any, 'a', 0, ATR_NONE,
 				"Open or close your pata", MENU_UNSELECTED);
+	else if (obj->otyp == STAKE_DRIVER || obj->otyp == JOLT_LANCE)
+		add_menu(win, NO_GLYPH, &any, 'a', 0, ATR_NONE, 
+				"Prime your stake driver", MENU_UNSELECTED);
 	else if (obj->otyp == SOLDIER_S_RAPIER || obj->otyp == SOLDIER_S_SABER)
 		add_menu(win, NO_GLYPH, &any, 'a', 0, ATR_NONE,
 				"Latch or unlatch your rapier", MENU_UNSELECTED);

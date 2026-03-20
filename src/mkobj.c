@@ -828,6 +828,10 @@ int mkflags;
 		struct obj *sword = mksobj(HUNTER_S_LONGSWORD, mkflags);
 		add_to_container(otmp, sword);
 	}
+	else if (otmp->otyp == STAKE_DRIVER){
+		struct obj *stake = mksobj(STAKE, mkflags);
+		add_to_container(otmp, stake);
+	}
 	else if (otmp->otyp == MASS_SHADOW_PISTOL){
 		struct obj *stone = mksobj(ROCK, NO_MKOBJ_FLAGS);
 		stone->quan = 1;

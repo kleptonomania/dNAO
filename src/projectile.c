@@ -2336,6 +2336,55 @@ ufire_blaster(struct obj *launcher, int shotlimit)
 	return result;
 }
 
+/* Hacked together stake driver heavy attack. */
+
+stake_driver_heavy()
+{
+	int n = 2;
+	int dmg = d(n, 12) + n * uwep->spe;
+	xchar lsx, lsy, sx, sy;
+	struct monst *mon;
+	struct obj *bullet = 0;
+	sx = u.ux;
+	sy = u.uy;
+
+	if (!getdir((char *)0) || !(u.dx || u.dy)) return MOVE_CANCELLED;
+		useup(uquiver);
+
+	if (u.uswallow){
+		explode(u.ux, u.uy, AD_FIRE, WAND_CLASS, (d(n, 12) + n * uwep->spe), EXPL_FIERY, 1);
+		return MOVE_STANDARD;
+	}
+	else {
+		lsx = sx; sx += u.dx; 
+		lsy = sy; sy += u.dy; 
+		if (isok(sx, sy) && isok(lsx, lsy) && !IS_STWALL(levl[sx][sy].typ)) {
+			mon = m_at(sx, sy);
+			if (mon){
+				explode((sx + u.dx), (sy + u.dy), AD_FIRE, WAND_CLASS, dmg, EXPL_FIERY, 1);
+				if(bullet){
+					place_object(bullet, sx, sy);
+					bullet = 0;
+				}
+			}
+		}
+		else {
+//			explode(lsx, lsy, AD_FIRE, WAND_CLASS, dmg, EXPL_FIERY, 1);
+			if(bullet){
+				place_object(bullet, lsx, lsy);
+				bullet = 0;
+			}
+		}
+	}
+	if(bullet){
+		place_object(bullet, sx, sy);
+		newsym(sx, sy);
+		bullet = 0;
+	}
+	return MOVE_STANDARD;
+}
+
+
 /*
  * dofire()
  *
@@ -2422,6 +2471,14 @@ dofire()
 			// (uwep->oartifact == ART_SICKLE_MOON)
 			)) {
 			return uthrow(uwep, (struct obj *)0, shotlimit, FALSE, FALSE);
+		}
+
+		/* Stake driver charged attack*/
+		if (uwep && uwep->otyp == STAKE_DRIVER && (uquiver && (uquiver->otyp == BLOOD_BULLET || uquiver->otyp == BLOOD_SPEAR))){
+				nomul(-1, "charging up a stake driver");
+//				nomovemsg = "The shockwave travels up your arm!";
+				afternmv = stake_driver_heavy;
+				return MOVE_INSTANT;
 		}
 
 		/* Holy Moonlight Sword's magic blast -- mainhand only */
